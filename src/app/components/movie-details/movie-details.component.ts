@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-movie-details',
   templateUrl: './movie-details.component.html',
+  styleUrls: ['./movie-details.component.css'],
   standalone: true,
   imports: [CommonModule]
 })

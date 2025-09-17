@@ -81,8 +81,8 @@
     </div>
 
     <!-- Description -->
-    <p *ngIf="show.description" class="text-xs text-gray-400 line-clamp-3">
-      {{ show.description }}
-    </p>
+    <!-- <p *ngIf="show.description" class="text-xs text-gray-400">
+      {{ show.description.length > 50 ? (show.description | slice:0:150) + '...' : show.description }}
+    </p> -->
   </div>
 </div>

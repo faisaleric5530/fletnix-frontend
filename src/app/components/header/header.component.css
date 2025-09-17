@@ -220,6 +220,10 @@ input[type="radio"] {
   width: 16rem;
 }
 
+.w-80 {
+  width: 50rem;
+}
+
 .rounded-xl {
   border-radius: 0.75rem;
 }
