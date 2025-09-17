@@ -1,0 +1,145 @@
+<div class="min-h-screen flex items-center justify-center px-4 py-12">
+  <div class="max-w-md w-full space-y-8">
+    <!-- Header -->
+    <div class="text-center">
+      <div class="text-4xl font-bold text-primary mb-2">FletNix</div>
+      <h2 class="text-2xl font-semibold text-white mb-2">
+        {{ isLogin ? 'Welcome back!' : 'Create your account' }}
+      </h2>
+      <p class="text-gray-400">
+        {{ isLogin ? 'Sign in to discover amazing content' : 'Join us to explore Netflix movies and shows' }}
+      </p>
+    </div>
+
+    <!-- Auth Form -->
+    <div class="glass-strong rounded-2xl p-8 shadow-2xl">
+      <form [formGroup]="authForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        
+        <!-- Email Field -->
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-300 mb-2">
+            Email Address
+          </label>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            class="input"
+            [class.border-red-500]="hasFieldError('email')"
+            placeholder="Enter your email"
+          >
+          <div *ngIf="hasFieldError('email')" class="mt-1 text-sm text-red-400">
+            {{ getFieldError('email') }}
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-300 mb-2">
+            Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            formControlName="password"
+            class="input"
+            [class.border-red-500]="hasFieldError('password')"
+            placeholder="Enter your password"
+          >
+          <div *ngIf="hasFieldError('password')" class="mt-1 text-sm text-red-400">
+            {{ getFieldError('password') }}
+          </div>
+        </div>
+
+        <!-- Age Field (Register only) -->
+        <div *ngIf="!isLogin">
+          <label for="age" class="block text-sm font-medium text-gray-300 mb-2">
+            Age
+          </label>
+          <input
+            id="age"
+            type="number"
+            formControlName="age"
+            class="input"
+            [class.border-red-500]="hasFieldError('age')"
+            placeholder="Enter your age"
+            min="1"
+            max="120"
+          >
+          <div *ngIf="hasFieldError('age')" class="mt-1 text-sm text-red-400">
+            {{ getFieldError('age') }}
+          </div>
+          <div class="mt-1 text-xs text-gray-500">
+            Age is used to filter age-appropriate content
+          </div>
+        </div>
+
+        <!-- Error Message -->
+        <div *ngIf="error" class="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+          <div class="flex items-center">
+            <svg class="w-5 h-5 text-red-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>
+            <span class="text-sm text-red-400">{{ error }}</span>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          [disabled]="isLoading"
+          class="w-full btn btn-primary py-3 text-base font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <div *ngIf="isLoading" class="flex items-center justify-center">
+            <div class="spinner w-5 h-5 mr-2"></div>
+            Processing...
+          </div>
+          <span *ngIf="!isLoading">
+            {{ isLogin ? 'Sign In' : 'Create Account' }}
+          </span>
+        </button>
+      </form>
+
+      <!-- Toggle Auth Mode -->
+      <div class="mt-6 text-center">
+        <p class="text-gray-400 text-sm">
+          {{ isLogin ? "Don't have an account?" : "Already have an account?" }}
+          <button
+            type="button"
+            (click)="toggleMode()"
+            class="text-primary hover:text-secondary font-medium ml-1 transition-colors"
+          >
+            {{ isLogin ? 'Create one' : 'Sign in' }}
+          </button>
+        </p>
+      </div>
+
+      <!-- Features List -->
+      <div class="mt-8 pt-6 border-t border-gray-700">
+        <div class="text-sm text-gray-400 text-center mb-4">
+          What you'll get:
+        </div>
+        <div class="space-y-2">
+          <div class="flex items-center text-sm text-gray-300">
+            <svg class="w-4 h-4 text-primary mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Discover thousands of Netflix movies and TV shows
+          </div>
+          <div class="flex items-center text-sm text-gray-300">
+            <svg class="w-4 h-4 text-primary mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Advanced search and filtering options
+          </div>
+          <div class="flex items-center text-sm text-gray-300">
+            <svg class="w-4 h-4 text-primary mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Age-appropriate content filtering
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

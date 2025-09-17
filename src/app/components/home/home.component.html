@@ -1,0 +1,193 @@
+<div class="min-h-screen pt-20 pb-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <!-- Header Section -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 fade-in">
+        Discover Amazing Content
+      </h1>
+      <p class="text-xl text-gray-400 max-w-2xl mx-auto fade-in">
+        Explore thousands of Netflix movies and TV shows. Find your next favorite with our advanced search and filtering.
+      </p>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8" *ngIf="!isLoading && totalCount > 0">
+      <div class="glass-card rounded-xl p-6 text-center fade-in">
+        <div class="text-3xl font-bold text-primary mb-2">{{ totalCount }}</div>
+        <div class="text-gray-400">Total Shows</div>
+      </div>
+      <div class="glass-card rounded-xl p-6 text-center fade-in">
+        <div class="text-3xl font-bold text-secondary mb-2">{{ currentPage }}</div>
+        <div class="text-gray-400">Current Page</div>
+      </div>
+      <div class="glass-card rounded-xl p-6 text-center fade-in">
+        <div class="text-3xl font-bold text-violet-400 mb-2">{{ getActiveFiltersCount() }}</div>
+        <div class="text-gray-400">Active Filters</div>
+      </div>
+    </div>
+
+    <!-- Controls Bar -->
+    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8" *ngIf="!isLoading">
+      <!-- Filter Summary -->
+      <div class="flex flex-wrap items-center gap-3">
+        <span class="text-gray-400 text-sm">Showing {{ shows.length }} of {{ totalCount }} results</span>
+        
+        <!-- Active Filters -->
+        <div class="flex flex-wrap gap-2" *ngIf="hasActiveFilters()">
+          <span class="px-3 py-1 bg-violet-600/20 text-violet-300 rounded-full text-xs" *ngIf="currentSearch">
+            Search: "{{ currentSearch }}"
+          </span>
+          <span class="px-3 py-1 bg-violet-600/20 text-violet-300 rounded-full text-xs" *ngIf="currentType">
+            Type: {{ currentType }}
+          </span>
+          <span class="px-3 py-1 bg-violet-600/20 text-violet-300 rounded-full text-xs" *ngIf="currentRating">
+            Rating: {{ currentRating }}
+          </span>
+          <button 
+            (click)="clearAllFilters()"
+            class="px-3 py-1 bg-red-600/20 text-red-300 rounded-full text-xs hover:bg-red-600/30 transition-colors"
+          >
+            Clear All
+          </button>
+        </div>
+      </div>
+
+      <!-- Sort Controls -->
+      <div class="flex items-center gap-4">
+        <span class="text-gray-400 text-sm">Sort by:</span>
+        <div class="flex gap-2">
+          <button 
+            (click)="onSortChange('title', 'asc')"
+            class="px-3 py-1 rounded-lg text-sm transition-colors"
+            [class]="currentSort === 'title' ? 'bg-violet-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'"
+          >
+            Title
+          </button>
+          <button 
+            (click)="onSortChange('release_year', 'desc')"
+            class="px-3 py-1 rounded-lg text-sm transition-colors"
+            [class]="currentSort === 'release_year' ? 'bg-violet-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'"
+          >
+            Year
+          </button>
+          <button 
+            (click)="onSortChange('date_added', 'desc')"
+            class="px-3 py-1 rounded-lg text-sm transition-colors"
+            [class]="currentSort === 'date_added' ? 'bg-violet-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'"
+          >
+            Recently Added
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="text-center py-16">
+      <div class="spinner mx-auto mb-4"></div>
+      <p class="text-gray-400">Loading content...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error && !isLoading" class="text-center py-16">
+      <div class="glass-card rounded-xl p-8 max-w-md mx-auto">
+        <svg class="w-16 h-16 text-red-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+        </svg>
+        <h3 class="text-xl font-semibold text-white mb-2">Oops! Something went wrong</h3>
+        <p class="text-gray-400 mb-4">{{ error }}</p>
+        <button 
+          (click)="loadShows()" 
+          class="btn btn-primary"
+        >
+          Try Again
+        </button>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && !error && shows.length === 0" class="text-center py-16">
+      <div class="glass-card rounded-xl p-8 max-w-md mx-auto">
+        <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+        <h3 class="text-xl font-semibold text-white mb-2">No content found</h3>
+        <p class="text-gray-400 mb-4">Try adjusting your search or filters to find what you're looking for.</p>
+        <button 
+          (click)="clearAllFilters()" 
+          class="btn btn-secondary"
+        >
+          Clear Filters
+        </button>
+      </div>
+    </div>
+
+    <!-- Movies Grid -->
+    <div *ngIf="!isLoading && !error && shows.length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mb-12">
+      <app-movie-card 
+        *ngFor="let show of shows; trackBy: trackByShowId" 
+        [show]="show"
+        class="slide-up"
+      ></app-movie-card>
+    </div>
+
+    <!-- Pagination -->
+    <div *ngIf="!isLoading && !error && totalPages > 1" class="flex justify-center items-center space-x-2">
+      <!-- Previous Button -->
+      <button 
+        (click)="onPageChange(currentPage - 1)"
+        [disabled]="!hasPrevPage"
+        class="px-4 py-2 glass rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-violet-600/20 transition-colors"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+      </button>
+
+      <!-- First Page -->
+      <button 
+        *ngIf="currentPage > 3"
+        (click)="onPageChange(1)"
+        class="px-4 py-2 glass rounded-lg hover:bg-violet-600/20 transition-colors"
+      >
+        1
+      </button>
+      
+      <!-- Ellipsis -->
+      <span *ngIf="currentPage > 4" class="px-2 text-gray-400">...</span>
+
+      <!-- Page Numbers -->
+      <button 
+        *ngFor="let page of getPageNumbers()"
+        (click)="onPageChange(page)"
+        class="px-4 py-2 rounded-lg transition-colors"
+        [class]="page === currentPage ? 'bg-violet-600 text-white' : 'glass hover:bg-violet-600/20'"
+      >
+        {{ page }}
+      </button>
+
+      <!-- Ellipsis -->
+      <span *ngIf="currentPage < totalPages - 3" class="px-2 text-gray-400">...</span>
+
+      <!-- Last Page -->
+      <button 
+        *ngIf="currentPage < totalPages - 2"
+        (click)="onPageChange(totalPages)"
+        class="px-4 py-2 glass rounded-lg hover:bg-violet-600/20 transition-colors"
+      >
+        {{ totalPages }}
+      </button>
+
+      <!-- Next Button -->
+      <button 
+        (click)="onPageChange(currentPage + 1)"
+        [disabled]="!hasNextPage"
+        class="px-4 py-2 glass rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-violet-600/20 transition-colors"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>

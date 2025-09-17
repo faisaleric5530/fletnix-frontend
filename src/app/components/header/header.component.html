@@ -1,0 +1,157 @@
+<header class="fixed top-0 w-full z-50 glass-header">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo -->
+      <div class="flex items-center cursor-pointer" (click)="navigateHome()">
+        <div class="text-2xl font-bold text-primary">FletNix</div>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="flex-1 max-w-md mx-8">
+        <div class="relative">
+          <input
+            [formControl]="searchControl"
+            type="text"
+            placeholder="Search movies and TV shows..."
+            class="input pl-10 pr-4"
+          >
+          <svg class="absolute left-3 top-50 transform -translate-y-50 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Filter Dropdown -->
+      <div class="relative mr-4">
+        <button
+          (click)="toggleFilterMenu()"
+          class="btn btn-secondary flex items-center gap-2"
+          [class.bg-violet-600]="isFilterMenuOpen"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"></path>
+          </svg>
+          Filter
+        </button>
+
+        <!-- Filter Dropdown Menu -->
+        <div 
+          *ngIf="isFilterMenuOpen"
+          class="absolute right-0 mt-2 w-64 glass-strong rounded-xl shadow-lg z-50"
+        >
+          <div class="p-4">
+            <div class="mb-4">
+              <h3 class="text-sm font-medium text-gray-300 mb-2">Type</h3>
+              <div class="space-y-2">
+                <label class="flex items-center cursor-pointer">
+                  <input 
+                    type="radio" 
+                    name="type" 
+                    value="" 
+                    [checked]="selectedType === ''"
+                    (change)="onTypeFilter('')"
+                    class="text-primary"
+                  >
+                  <span class="ml-2 text-sm">All</span>
+                </label>
+                <label class="flex items-center cursor-pointer" *ngFor="let type of filterOptions?.types">
+                  <input 
+                    type="radio" 
+                    name="type" 
+                    [value]="type"
+                    [checked]="selectedType === type"
+                    (change)="onTypeFilter(type)"
+                    class="text-primary"
+                  >
+                  <span class="ml-2 text-sm">{{ type }}</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <h3 class="text-sm font-medium text-gray-300 mb-2">Rating</h3>
+              <div class="space-y-2">
+                <label class="flex items-center cursor-pointer">
+                  <input 
+                    type="radio" 
+                    name="rating" 
+                    value="" 
+                    [checked]="selectedRating === ''"
+                    (change)="onRatingFilter('')"
+                    class="text-primary"
+                  >
+                  <span class="ml-2 text-sm">All Ratings</span>
+                </label>
+                <label class="flex items-center cursor-pointer" *ngFor="let rating of filterOptions?.ratings">
+                  <input 
+                    type="radio" 
+                    name="rating" 
+                    [value]="rating"
+                    [checked]="selectedRating === rating"
+                    (change)="onRatingFilter(rating)"
+                    class="text-primary"
+                  >
+                  <span class="ml-2 text-sm">{{ rating }}</span>
+                </label>
+              </div>
+            </div>
+
+            <button 
+              (click)="clearFilters()"
+              class="w-full btn btn-secondary text-sm"
+            >
+              Clear All Filters
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Dropdown -->
+      <div class="relative">
+        <button
+          (click)="toggleProfileMenu()"
+          class="flex items-center gap-3 p-2 rounded-full glass hover:bg-opacity-20 transition-all duration-300"
+          [class.bg-violet-600]="isProfileMenuOpen"
+        >
+          <span class="text-sm font-medium text-white">
+            {{ user?.email?.charAt(0)?.toUpperCase() || '?' }}
+          </span>
+          <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+
+        <!-- Profile Dropdown Menu -->
+        <div 
+          *ngIf="isProfileMenuOpen"
+          class="absolute right-0 mt-2 w-64 glass-strong rounded-xl shadow-lg z-50"
+        >
+          <div class="p-4">
+            <div class="mb-3 pb-3 border-b border-gray-600">
+              <p class="text-sm font-medium text-white">{{ user?.email }}</p>
+              <p class="text-xs text-gray-400">Age: {{ user?.age }}</p>
+              <p class="text-xs text-gray-400">Account: {{ user?.isAdult ? 'Adult' : 'Minor' }}</p>
+            </div>
+            
+            <button 
+              (click)="logout()"
+              class="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-red-500/20 transition-colors duration-300 group"
+            >
+              <svg class="w-5 h-5 text-red-400 group-hover:text-red-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+              </svg>
+              <span class="text-sm text-red-400 group-hover:text-red-300">Sign Out</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Overlay for closing menus -->
+<div 
+  *ngIf="isProfileMenuOpen || isFilterMenuOpen"
+  (click)="closeMenus()"
+  class="fixed inset-0 z-40"
+></div>

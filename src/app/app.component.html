@@ -1,0 +1,26 @@
+<div class="app-container">
+  <!-- Global Loading State -->
+  <div *ngIf="isLoading" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900">
+    <div class="text-center">
+      <div class="text-4xl font-bold text-primary mb-4">FletNix</div>
+      <div class="spinner mx-auto mb-4"></div>
+      <p class="text-gray-400">Loading your entertainment hub...</p>
+    </div>
+  </div>
+
+  <!-- Main App Content -->
+  <div *ngIf="!isLoading" class="min-h-screen flex flex-col">
+    
+    <!-- Header (shown when authenticated and not on auth page) -->
+    <app-header *ngIf="isAuthenticated && showHeaderFooter"></app-header>
+    
+    <!-- Main Content Area -->
+    <main class="flex-1">
+      <router-outlet></router-outlet>
+    </main>
+    
+    <!-- Footer (shown when authenticated and not on auth page) -->
+    <app-footer *ngIf="isAuthenticated && showHeaderFooter"></app-footer>
+    
+  </div>
+</div>
