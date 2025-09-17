@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-movie-card',
@@ -14,6 +15,8 @@ export class MovieCardComponent {
 
   imageError = false;
 
+  constructor(private router: Router) {}
+
   getGenres(): string[] {
     return this.movie?.genres || [];
   }
@@ -22,7 +25,7 @@ export class MovieCardComponent {
     this.imageError = true;
   }
 
-  viewDetails(): void {
-    console.log('Viewing details for:', this.show || this.movie);
+  viewDetails(id: string) {
+    this.router.navigate(['/movie', id]);
   }
 }

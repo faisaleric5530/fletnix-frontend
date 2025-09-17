@@ -1,4 +1,4 @@
-<div class="glass-card rounded-xl overflow-hidden hover-glow cursor-pointer fade-in" (click)="viewDetails()">
+<div class="glass-card rounded-xl overflow-hidden hover-glow cursor-pointer fade-in" (click)="viewDetails(show.show_id)">
   <!-- Movie Poster -->
   <div class="relative aspect-[2/3] bg-gray-800 overflow-hidden">
     <div *ngIf="!imageError" class="w-full h-full bg-gradient-to-br from-violet-900 to-purple-900 flex items-center justify-center">

@@ -16,6 +16,10 @@
   aspect-ratio: 2/3;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 /* Utility classes */
 .relative { position: relative; }
 .absolute { position: absolute; }

@@ -15,7 +15,7 @@ import { CommonModule } from '@angular/common';
     CommonModule,
     RouterModule,
     HeaderComponent,
-    FooterComponent
+    // FooterComponent
   ]
 })
 export class AppComponent implements OnInit, OnDestroy {
